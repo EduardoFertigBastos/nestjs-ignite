@@ -30,7 +30,7 @@ model Question {
   authorId String @map("author_id")
 
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
 
   author User @relation(fields: [authorId], references: [id])
   
