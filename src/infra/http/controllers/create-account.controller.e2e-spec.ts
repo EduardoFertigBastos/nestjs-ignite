@@ -1,7 +1,7 @@
+import { PrismaService } from '@/infra/database/prisma/prisma.service';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from 'src/infra/app.module';
-import { PrismaService } from 'src/infra/prisma/prisma.service';
 import request from 'supertest';
 
 describe('Create Account (e2e)', () => {

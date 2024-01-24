@@ -2,7 +2,7 @@ import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { envSchema } from './env';
 import { AuthModule } from './auth/auth.module';
-import { HttpModule } from './http/auth.module';
+import { HttpModule } from './http/http.module';
 
 @Module({
   imports: [
