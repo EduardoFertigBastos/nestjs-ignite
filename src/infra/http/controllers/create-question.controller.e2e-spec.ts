@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { AppModule } from 'src/app.module';
+import { AppModule } from 'src/infra/app.module';
 import request from 'supertest';
 
 describe('Create Question (e2e)', () => {
