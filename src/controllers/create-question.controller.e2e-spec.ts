@@ -1,13 +1,10 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import e from 'express';
 import { AppModule } from 'src/app.module';
-import { PrismaService } from 'src/prisma/prisma.service';
 import request from 'supertest';
 
 describe('Create Question (e2e)', () => {
   let app: INestApplication;
-  let prisma: PrismaService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -16,13 +13,11 @@ describe('Create Question (e2e)', () => {
 
     app = moduleRef.createNestApplication();
 
-    prisma = moduleRef.get(PrismaService);
-
     await app.init();
   });
 
   test('[POST] /questions (201)', async () => {
-    const response = await request(app.getHttpServer()).post('/accounts').send({
+    await request(app.getHttpServer()).post('/accounts').send({
       name: 'John Doe',
       email: 'johndoe@gmail.com',
       password: '123456',

@@ -17,7 +17,7 @@ describe('Fetch Recent Questions (e2e)', () => {
   });
 
   test('[GET] /questions (200)', async () => {
-    const response = await request(app.getHttpServer()).post('/accounts').send({
+    await request(app.getHttpServer()).post('/accounts').send({
       name: 'John Doe',
       email: 'johndoe@gmail.com',
       password: '123456',
