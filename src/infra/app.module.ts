@@ -1,8 +1,11 @@
 import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
-import { envSchema } from './env';
+import { envSchema } from './env/env';
 import { AuthModule } from './auth/auth.module';
 import { HttpModule } from './http/http.module';
+import { CryptographyModule } from './cryptography/cryptography.module';
+import { EnvService } from './env/env.service';
+import { EnvModule } from './env/env.module';
 
 @Module({
   imports: [
@@ -11,7 +14,10 @@ import { HttpModule } from './http/http.module';
       isGlobal: true,
     }),
     AuthModule,
+    EnvModule,
+    CryptographyModule,
     HttpModule,
   ],
+  providers: [EnvService],
 })
 export class AppModule {}

@@ -30,6 +30,7 @@ describe('Authenticate (e2e)', () => {
         password: '123456',
       });
 
+    console.log('responseSessions', responseSessions);
     expect(responseSessions.status).toBe(201);
     expect(responseSessions.body).toEqual({
       access_token: expect.any(String),

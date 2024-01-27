@@ -1,7 +1,5 @@
 import { FetchRecentQuestionsUseCase } from './../../../domain/forum/application/use-cases/fetch-recent-questions';
-import { PrismaService } from '@/infra/database/prisma/prisma.service';
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/infra/auth/jwt-auth.guard';
+import { BadRequestException, Controller, Get, Query } from '@nestjs/common';
 import { ZodValidationPipe } from 'src/infra/http/pipes/zod-validation.pipe';
 import { z } from 'zod';
 import { QuestionPresenter } from '../presenters/question-presenter';
@@ -22,7 +20,6 @@ export class FetchRecentQuestionsController {
   constructor(private fetchRecentQuestions: FetchRecentQuestionsUseCase) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   async handle(
     @Query('page', queryValidationPipe) page: PageQueryParamsSchema,
   ) {
@@ -31,7 +28,7 @@ export class FetchRecentQuestionsController {
     });
 
     if (result.isLeft()) {
-      throw result.value;
+      throw new BadRequestException();
     }
 
     const questions = result.value.questions.map((question) =>

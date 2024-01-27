@@ -1,5 +1,8 @@
+import { StudentAlreadyExistsError } from '@/domain/forum/application/use-cases/errors/student-already-exists-error';
+import { RegisterStudentUseCase } from './../../../domain/forum/application/use-cases/register-student';
 import { PrismaService } from '@/infra/database/prisma/prisma.service';
 import {
+  BadRequestException,
   Body,
   ConflictException,
   Controller,
@@ -10,6 +13,7 @@ import {
 import { hash } from 'bcryptjs';
 import { ZodValidationPipe } from 'src/infra/http/pipes/zod-validation.pipe';
 import { z } from 'zod';
+import { Public } from '@/infra/auth/public';
 
 const createAccountBodySchema = z.object({
   email: z.string().email(),
@@ -20,8 +24,9 @@ const createAccountBodySchema = z.object({
 type CreateAccountBodySchema = z.infer<typeof createAccountBodySchema>;
 
 @Controller('/accounts')
+@Public()
 export class CreateAccountController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private registerStudent: RegisterStudentUseCase) {}
 
   @Post()
   @HttpCode(201)
@@ -29,29 +34,27 @@ export class CreateAccountController {
   async handle(@Body() body: CreateAccountBodySchema) {
     const { email, name, password } = body;
 
-    const userWithSameEmail = await this.prisma.user.findUnique({
-      where: {
-        email,
-      },
+    const result = await this.registerStudent.execute({
+      email,
+      name,
+      password,
     });
 
-    if (userWithSameEmail) {
-      throw new ConflictException('User with same email already exists');
+    if (result.isLeft()) {
+      const error = result.value;
+
+      if (error.constructor === StudentAlreadyExistsError) {
+        throw new ConflictException(error.message);
+      }
+
+      throw new BadRequestException(error.message);
     }
 
-    const hashedPassword = await hash(password, 8);
-
-    const user = await this.prisma.user.create({
-      data: {
-        email,
-        name,
-        password: hashedPassword,
-      },
-    });
+    const { student } = result.value;
 
     return {
-      user: {
-        ...user,
+      student: {
+        ...student,
         password: undefined,
       },
     };

@@ -5,6 +5,7 @@ import { Either, right } from '@/core/either';
 import { QuestionAttachment } from '@/domain/forum/enterprise/entities/question-attachment';
 import { QuestionAttachmentList } from '@/domain/forum/enterprise/entities/question-attachment-list';
 import { Injectable } from '@nestjs/common';
+import { QuestionPresenter } from '@/infra/http/presenters/question-presenter';
 
 interface CreateQuestionUseCaseRequest {
   authorId: string;
@@ -13,12 +14,7 @@ interface CreateQuestionUseCaseRequest {
   attachmentsIds: string[];
 }
 
-type CreateQuestionUseCaseResponse = Either<
-  null,
-  {
-    question: Question;
-  }
->;
+type CreateQuestionUseCaseResponse = Either<null, any>;
 
 @Injectable()
 export class CreateQuestionUseCase {
@@ -47,8 +43,6 @@ export class CreateQuestionUseCase {
 
     await this.questionsRepository.create(question);
 
-    return right({
-      question,
-    });
+    return right(null);
   }
 }

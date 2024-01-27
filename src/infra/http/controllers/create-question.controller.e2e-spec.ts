@@ -41,12 +41,5 @@ describe('Create Question (e2e)', () => {
       });
 
     expect(responseQuestions.status).toBe(201);
-    expect(responseQuestions.body.question).toEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        title: 'What a title',
-        content: 'What a content',
-      }),
-    );
   });
 });
