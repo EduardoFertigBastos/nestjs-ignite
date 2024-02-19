@@ -22,4 +22,12 @@ export class PrismaStudentMapper {
       password: student.password,
     };
   }
+
+  static toHttp(student: Student): Partial<Prisma.UserUncheckedCreateInput> {
+    return {
+      id: student.id.toString(),
+      name: student.name,
+      email: student.email,
+    };
+  }
 }
