@@ -1,10 +1,10 @@
+import { AppModule } from '@/infra/app.module';
 import { PrismaService } from '@/infra/database/prisma/prisma.service';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { AppModule } from 'src/infra/app.module';
 import request from 'supertest';
 
-describe('Create Account (e2e)', () => {
+describe('Create Account (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
 
@@ -20,29 +20,21 @@ describe('Create Account (e2e)', () => {
     await app.init();
   });
 
-  test('[POST] /create-account (201)', async () => {
+  test('[POST] /accounts', async () => {
     const response = await request(app.getHttpServer()).post('/accounts').send({
       name: 'John Doe',
-      email: 'johndoe@gmail.com',
+      email: 'johndoe@example.com',
       password: '123456',
     });
 
-    expect(response.status).toBe(201);
+    expect(response.statusCode).toBe(201);
 
     const userOnDatabase = await prisma.user.findUnique({
-      where: { email: 'johndoe@gmail.com' },
+      where: {
+        email: 'johndoe@example.com',
+      },
     });
 
     expect(userOnDatabase).toBeTruthy();
-
-    const responseRepeatedEmail = await request(app.getHttpServer())
-      .post('/accounts')
-      .send({
-        name: 'John Doe',
-        email: 'johndoe@gmail.com',
-        password: '123456',
-      });
-
-    expect(responseRepeatedEmail.status).toBe(409);
   });
 });

@@ -1,6 +1,3 @@
-import { StudentAlreadyExistsError } from '@/domain/forum/application/use-cases/errors/student-already-exists-error';
-import { RegisterStudentUseCase } from './../../../domain/forum/application/use-cases/register-student';
-import { PrismaService } from '@/infra/database/prisma/prisma.service';
 import {
   BadRequestException,
   Body,
@@ -10,15 +7,16 @@ import {
   Post,
   UsePipes,
 } from '@nestjs/common';
-import { hash } from 'bcryptjs';
-import { ZodValidationPipe } from 'src/infra/http/pipes/zod-validation.pipe';
 import { z } from 'zod';
+import { RegisterStudentUseCase } from '@/domain/forum/application/use-cases/register-student';
+import { StudentAlreadyExistsError } from '@/domain/forum/application/use-cases/errors/student-already-exists-error';
 import { Public } from '@/infra/auth/public';
+import { ZodValidationPipe } from '../pipes/zod-validation.pipe';
 
 const createAccountBodySchema = z.object({
-  email: z.string().email(),
   name: z.string(),
-  password: z.string().min(6).max(32),
+  email: z.string().email(),
+  password: z.string(),
 });
 
 type CreateAccountBodySchema = z.infer<typeof createAccountBodySchema>;
@@ -32,31 +30,23 @@ export class CreateAccountController {
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createAccountBodySchema))
   async handle(@Body() body: CreateAccountBodySchema) {
-    const { email, name, password } = body;
+    const { name, email, password } = body;
 
     const result = await this.registerStudent.execute({
-      email,
       name,
+      email,
       password,
     });
 
     if (result.isLeft()) {
       const error = result.value;
 
-      if (error.constructor === StudentAlreadyExistsError) {
-        throw new ConflictException(error.message);
+      switch (error.constructor) {
+        case StudentAlreadyExistsError:
+          throw new ConflictException(error.message);
+        default:
+          throw new BadRequestException(error.message);
       }
-
-      throw new BadRequestException(error.message);
     }
-
-    const { student } = result.value;
-
-    return {
-      student: {
-        ...student,
-        password: undefined,
-      },
-    };
   }
 }
