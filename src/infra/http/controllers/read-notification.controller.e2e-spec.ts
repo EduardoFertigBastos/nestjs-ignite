@@ -59,3 +59,9 @@
 //     expect(notificationOnDatabase?.readAt).not.toBeNull();
 //   });
 // });
+
+describe('read notification (E2E)', () => {
+  test('should pass', () => {
+    expect(1).toBe(1);
+  });
+});

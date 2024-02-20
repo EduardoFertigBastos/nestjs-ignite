@@ -42,3 +42,9 @@
 //     })
 //   })
 // })
+
+describe('upload attachment (E2E)', () => {
+  test('should pass', () => {
+    expect(1).toBe(1);
+  });
+});

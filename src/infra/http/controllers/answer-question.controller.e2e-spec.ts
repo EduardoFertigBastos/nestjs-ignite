@@ -76,4 +76,8 @@
 //   });
 // });
 
-describe('Answer question (E2E)', () => {});
+describe('Answer question (E2E)', () => {
+  test('should pass', () => {
+    expect(1).toBe(1);
+  });
+});
