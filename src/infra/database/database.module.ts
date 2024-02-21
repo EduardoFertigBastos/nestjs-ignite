@@ -14,8 +14,8 @@ import { AnswerCommentsRepository } from '@/domain/forum/application/repositorie
 import { AnswersRepository } from '@/domain/forum/application/repositories/answers-repository';
 import { QuestionAttachmentsRepository } from '@/domain/forum/application/repositories/question-attachments-repository';
 import { QuestionCommentsRepository } from '@/domain/forum/application/repositories/question-comments-repository';
-// import { AttachmentsRepository } from '@/domain/forum/application/repositories/attachments-repository';
-// import { PrismaAttachmentsRepository } from './prisma/repositories/prisma-attachments-repository';
+import { AttachmentsRepository } from '@/domain/forum/application/repositories/attachments-repository';
+import { PrismaAttachmentsRepository } from './prisma/repositories/prisma-attachments-repository';
 // import { PrismaNotificationsRepository } from './prisma/repositories/prisma-notifications-repository';
 import { NotificationsRepository } from '@/domain/notification/application/repositories/notifications-repository';
 // import { CacheModule } from '../cache/cache.module';
@@ -52,10 +52,10 @@ import { NotificationsRepository } from '@/domain/notification/application/repos
       provide: AnswerAttachmentsRepository,
       useClass: PrismaAnswerAttachmentsRepository,
     },
-    // {
-    //   provide: AttachmentsRepository,
-    //   useClass: PrismaAttachmentsRepository,
-    // },
+    {
+      provide: AttachmentsRepository,
+      useClass: PrismaAttachmentsRepository,
+    },
     // {
     //   provide: NotificationsRepository,
     //   useClass: PrismaNotificationsRepository,
@@ -70,7 +70,7 @@ import { NotificationsRepository } from '@/domain/notification/application/repos
     AnswersRepository,
     AnswerCommentsRepository,
     AnswerAttachmentsRepository,
-    // AttachmentsRepository,
+    AttachmentsRepository,
     // NotificationsRepository,
   ],
 })
