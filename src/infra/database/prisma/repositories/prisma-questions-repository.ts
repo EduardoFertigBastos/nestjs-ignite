@@ -15,7 +15,7 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
   constructor(
     private prisma: PrismaService,
     // private cache: CacheRepository,
-    // private questionAttachmentsRepository: QuestionAttachmentsRepository,
+    private questionAttachmentsRepository: QuestionAttachmentsRepository,
   ) {}
 
   async findById(id: string): Promise<Question | null> {
@@ -98,11 +98,9 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
       data,
     });
 
-    // await this.questionAttachmentsRepository.createMany(
-    //   question.attachments.getItems(),
-    // );
-
-    DomainEvents.dispatchEventsForAggregate(question.id);
+    await this.questionAttachmentsRepository.createMany(
+      question.attachments.getItems(),
+    );
   }
 
   async save(question: Question): Promise<void> {
@@ -115,12 +113,12 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
         },
         data,
       }),
-      // this.questionAttachmentsRepository.createMany(
-      //   question.attachments.getNewItems(),
-      // ),
-      // this.questionAttachmentsRepository.deleteMany(
-      //   question.attachments.getRemovedItems(),
-      // ),
+      this.questionAttachmentsRepository.createMany(
+        question.attachments.getNewItems(),
+      ),
+      this.questionAttachmentsRepository.deleteMany(
+        question.attachments.getRemovedItems(),
+      ),
       // this.cache.delete(`question:${data.slug}:details`),
     ]);
 
