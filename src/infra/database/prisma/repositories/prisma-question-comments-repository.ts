@@ -4,8 +4,8 @@ import { QuestionComment } from '@/domain/forum/enterprise/entities/question-com
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { PrismaQuestionCommentMapper } from '../mappers/prisma-question-comment-mapper';
-import { CommentWithAuthor } from '@/domain/forum/enterprise/entities/value-objects/comment-with-author';
 import { PrismaCommentWithAuthorMapper } from '../mappers/prisma-comment-with-author-mapper';
+import { CommentWithAuthor } from '@/domain/forum/enterprise/entities/value-objects/comment-with-author';
 
 @Injectable()
 export class PrismaQuestionCommentsRepository

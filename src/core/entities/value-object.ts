@@ -1,0 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export abstract class ValueObject<Props> {
+  protected props: Props;
+
+  protected constructor(props: Props) {
+    this.props = props;
+  }
+
+  public equals(valueObject: ValueObject<any>) {
+    if (valueObject === null || valueObject === undefined) {
+      return false;
+    }
+
+    if (valueObject.props === undefined) {
+      return false;
+    }
+
+    return JSON.stringify(valueObject.props) === JSON.stringify(this.props);
+  }
+}
