@@ -1,3 +1,4 @@
+import { PrismaQuestionDetailsMapper } from './../mappers/prisma-question-details-mapper';
 import { PaginationParams } from '@/core/repositories/pagination-params';
 import { QuestionsRepository } from '@/domain/forum/application/repositories/questions-repository';
 import { Question } from '@/domain/forum/enterprise/entities/question';
@@ -8,6 +9,7 @@ import { QuestionAttachmentsRepository } from '@/domain/forum/application/reposi
 // import { QuestionDetails } from '@/domain/forum/enterprise/entities/value-objects/question-details';
 // import { PrismaQuestionDetailsMapper } from '../mappers/prisma-question-details-mapper';
 import { DomainEvents } from '@/core/events/domain-events';
+import { QuestionDetails } from '@/domain/forum/enterprise/entities/value-objects/question-details';
 // import { CacheRepository } from '@/infra/cache/cache-repository';
 
 @Injectable()
@@ -46,38 +48,38 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
     return PrismaQuestionMapper.toDomain(question);
   }
 
-  // async findDetailsBySlug(slug: string): Promise<QuestionDetails | null> {
-  //   const cacheHit = await this.cache.get(`question:${slug}:details`);
+  async findDetailsBySlug(slug: string): Promise<QuestionDetails | null> {
+    // const cacheHit = await this.cache.get(`question:${slug}:details`);
 
-  //   if (cacheHit) {
-  //     const cacheData = JSON.parse(cacheHit);
+    // if (cacheHit) {
+    //   const cacheData = JSON.parse(cacheHit);
 
-  //     return cacheData;
-  //   }
+    //   return cacheData;
+    // }
 
-  //   const question = await this.prisma.question.findUnique({
-  //     where: {
-  //       slug,
-  //     },
-  //     include: {
-  //       author: true,
-  //       attachments: true,
-  //     },
-  //   });
+    const question = await this.prisma.question.findUnique({
+      where: {
+        slug,
+      },
+      include: {
+        author: true,
+        attachments: true,
+      },
+    });
 
-  //   if (!question) {
-  //     return null;
-  //   }
+    if (!question) {
+      return null;
+    }
 
-  //   const questionDetails = PrismaQuestionDetailsMapper.toDomain(question);
+    const questionDetails = PrismaQuestionDetailsMapper.toDomain(question);
 
-  //   await this.cache.set(
-  //     `question:${slug}:details`,
-  //     JSON.stringify(questionDetails),
-  //   );
+    // await this.cache.set(
+    //   `question:${slug}:details`,
+    //   JSON.stringify(questionDetails),
+    // );
 
-  //   return questionDetails;
-  // }
+    return questionDetails;
+  }
 
   async findManyRecent({ page }: PaginationParams): Promise<Question[]> {
     const questions = await this.prisma.question.findMany({

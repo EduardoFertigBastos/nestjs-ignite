@@ -5,7 +5,7 @@ import { INestApplication } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
-// import { AttachmentFactory } from 'test/factories/make-attachment';
+import { AttachmentFactory } from 'test/factories/make-attachment';
 import { QuestionFactory } from 'test/factories/make-question';
 import { QuestionAttachmentFactory } from 'test/factories/make-question-attachments';
 import { StudentFactory } from 'test/factories/make-student';
@@ -14,7 +14,7 @@ describe('Get question by slug (E2E)', () => {
   let app: INestApplication;
   let studentFactory: StudentFactory;
   let questionFactory: QuestionFactory;
-  // let attachmentFactory: AttachmentFactory;
+  let attachmentFactory: AttachmentFactory;
   let questionAttachmentFactory: QuestionAttachmentFactory;
   let jwt: JwtService;
 
@@ -24,7 +24,7 @@ describe('Get question by slug (E2E)', () => {
       providers: [
         StudentFactory,
         QuestionFactory,
-        // AttachmentFactory,
+        AttachmentFactory,
         QuestionAttachmentFactory,
       ],
     }).compile();
@@ -33,14 +33,14 @@ describe('Get question by slug (E2E)', () => {
 
     studentFactory = moduleRef.get(StudentFactory);
     questionFactory = moduleRef.get(QuestionFactory);
-    // attachmentFactory = moduleRef.get(AttachmentFactory);
+    attachmentFactory = moduleRef.get(AttachmentFactory);
     questionAttachmentFactory = moduleRef.get(QuestionAttachmentFactory);
     jwt = moduleRef.get(JwtService);
 
     await app.init();
   });
 
-  test.only('[GET] /questions/:slug', async () => {
+  test('[GET] /questions/:slug', async () => {
     const user = await studentFactory.makePrismaStudent({
       name: 'John Doe',
     });
@@ -53,32 +53,31 @@ describe('Get question by slug (E2E)', () => {
       slug: Slug.create('question-01'),
     });
 
-    // const attachment = await attachmentFactory.makePrismaAttachment({
-    //   title: 'Some attachment',
-    // });
+    const attachment = await attachmentFactory.makePrismaAttachment({
+      title: 'Some attachment',
+    });
 
-    // await questionAttachmentFactory.makePrismaQuestionAttachment({
-    //   attachmentId: attachment.id,
-    //   questionId: question.id,
-    // });
+    await questionAttachmentFactory.makePrismaQuestionAttachment({
+      attachmentId: attachment.id,
+      questionId: question.id,
+    });
 
     const response = await request(app.getHttpServer())
       .get('/questions/question-01')
       .set('Authorization', `Bearer ${accessToken}`)
       .send();
-    // console.log(response.body)
 
     expect(response.statusCode).toBe(200);
-    expect(response.body.question).toEqual(
-      expect.objectContaining({
+    expect(response.body).toEqual({
+      question: expect.objectContaining({
         title: 'Question 01',
-        // author: 'John Doe',
-        // attachments: [
-        //   expect.objectContaining({
-        //     title: 'Some attachment',
-        //   }),
-        // ],
+        author: 'John Doe',
+        attachments: [
+          expect.objectContaining({
+            title: 'Some attachment',
+          }),
+        ],
       }),
-    );
+    });
   });
 });
