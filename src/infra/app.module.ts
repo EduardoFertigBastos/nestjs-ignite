@@ -6,6 +6,7 @@ import { HttpModule } from './http/http.module';
 import { CryptographyModule } from './cryptography/cryptography.module';
 import { EnvService } from './env/env.service';
 import { EnvModule } from './env/env.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { EnvModule } from './env/env.module';
     }),
     AuthModule,
     EnvModule,
+    EventsModule,
     CryptographyModule,
     HttpModule,
   ],
